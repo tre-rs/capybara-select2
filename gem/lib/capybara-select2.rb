@@ -26,7 +26,11 @@ module Capybara
       end
 
       if options.has_key? :search
-        find(:xpath, "//body").find(".select2-search input.select2-search__field").set(value)
+        begin
+          find(:xpath, "//body").find(".select2-search input.select2-search__field").set(value)
+        rescue Capybara::ElementNotFound
+          find(:xpath, "//body").find(".select2-search input").set(value)
+        end
         page.execute_script(%|$("input.select2-search__field:visible").keyup();|)
         drop_container = ".select2-results"
       elsif find(:xpath, "//body").has_selector?(".select2-dropdown")
